@@ -16,6 +16,8 @@ const Usuario = new Schema({
   },
   correo: {
     type: String,
+    index: true,
+    unique: true,
     default: "example@example.com",
     // Expresión regular para validación de correo
     match: [
