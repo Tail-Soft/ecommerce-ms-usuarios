@@ -6,30 +6,33 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const Usuario = new Schema({
   nombres: {
     type: String,
-    default: "",
+    default: " ",
+    trim: true,
     required: true,
   },
   apellidos: {
     type: String,
-    default: "",
+    default: " ",
   },
   correo: {
     type: String,
-    default: "",
+    default: "example@example.com",
     // Expresión regular para validación de correo
-    match: "/.+@.+..+/",
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      "Por favor, ingresa un correo valido.",
+    ],
     required: true,
   },
   admin: {
     type: Boolean,
     default: false,
-    immutable: true,
   },
   direccion_envio: [
     {
       direccion: {
         type: String,
-        required: True,
+        required: true,
       },
       descripcion: {
         type: String,
@@ -47,6 +50,13 @@ const Usuario = new Schema({
   ],
 });
 
-Usuario.plugin(passportLocalMongoose);
+/**
+ * Se especifican los campos a utilizar con passport, cambiando
+ * asignando el correo como username y la contraseña como password.
+ */
+Usuario.plugin(passportLocalMongoose, {
+  usernameField: "correo",
+  passwordField: "contraseña",
+});
 
 module.exports = mongoose.model("Usuario", Usuario);

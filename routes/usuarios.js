@@ -29,7 +29,8 @@ usuarioRouter.get(
 usuarioRouter.post("/signup", cors.corsWithOptions, (req, res, next) => {
   //Registra un usuario
   Usuario.register(
-    new Usuario({ correo: req.body.correo }),
+    // Parámetros requeridos deben ir dentro del nuevo usuario
+    new Usuario({ correo: req.body.correo, nombres: req.body.nombres }),
     req.body.contraseña,
     (err, usuario) => {
       if (err) {
@@ -38,9 +39,9 @@ usuarioRouter.post("/signup", cors.corsWithOptions, (req, res, next) => {
         res.json({ error: err });
         return;
       } else {
-        if (req.body.nombres) usuario.nombres = req.body.nombres;
+        // Parámetros opcionales se asignan si existen.
         if (req.body.apellidos) usuario.apellidos = req.body.apellidos;
-        usuarios.save((err, usuario) => {
+        usuario.save((err, usuario) => {
           if (err) {
             res.statusCode = 500;
             res.setHeader("Content-Type", "application/json");
@@ -64,7 +65,7 @@ usuarioRouter.post(
   passport.authenticate("local"),
   cors.corsWithOptions,
   (req, res) => {
-    const token = autenticacion.getToken({ _id: req.user_id });
+    const token = autenticacion.getToken({ _id: req.user._id });
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
     res.json({
@@ -77,7 +78,7 @@ usuarioRouter.post(
 
 // Ruta para cerrar sesión
 usuarioRouter.get("/logout", cors.corsWithOptions, (req, res, next) => {
-  if (req.sesion) {
+  if (req.session) {
     req.session.destroy();
     res.clearCookie("session-id");
     res.redirect("/");

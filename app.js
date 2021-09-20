@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 // Espacio para rutas
+const usuarioRouter = require("./routes/usuarios");
 
 // Conexión Mongo DB
 const connect = mongoose.connect(process.env.MONGO_KEY, {
@@ -26,8 +27,8 @@ connect.then(() => {
 
 const app = express();
 
-// Configuración
-app.use(express.json);
+// Configuración de la API.
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   session({
@@ -37,14 +38,15 @@ app.use(
   })
 );
 app.use(cors());
-
 app.use(passport.initialize());
 
+// Definición en ruta principal
 app.get("/", (req, res) => {
   res.send("Ecommerce API");
 });
 
 // Espacio para uso de rutas
+app.use("/usuarios", usuarioRouter);
 
 // Puertos
 const PORT = process.env.PORT || 3001;

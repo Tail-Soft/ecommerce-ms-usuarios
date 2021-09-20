@@ -5,8 +5,21 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 
-// Se crea una estrategia local para la autenticación del usuario
-exports.local = passport.use(new LocalStrategy(Usuario.authenticate()));
+/**
+ * Se crea una estrategia local para la autenticación del usuario.
+ * Es necesario especificar que el campo del nombre de usuario será
+ * el correo proporcionado, igualmente con el campo de la contraseña.
+ */
+
+exports.local = passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "correo",
+      passwordField: "contraseña",
+    },
+    Usuario.authenticate()
+  )
+);
 
 // Determina cuales datos del objeto usuario deben almacenarse en la sesión
 passport.serializeUser(Usuario.serializeUser());
@@ -44,7 +57,7 @@ exports.verifyUser = passport.authenticate("jwt", { session: false });
 
 // Verifica si el usuario es un administrador
 exports.verifyAdmin = function (req, res, next) {
-  if (req.usuario.admin) {
+  if (req.user.admin) {
     next();
   } else {
     const err = new Error("No tienes permitido realizar esta operación.");
