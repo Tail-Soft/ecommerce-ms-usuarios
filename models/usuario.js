@@ -6,7 +6,6 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const Usuario = new Schema({
   nombres: {
     type: String,
-    default: " ",
     trim: true,
     required: true,
   },
@@ -18,7 +17,6 @@ const Usuario = new Schema({
     type: String,
     index: true,
     unique: true,
-    default: "example@example.com",
     // Expresión regular para validación de correo
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,

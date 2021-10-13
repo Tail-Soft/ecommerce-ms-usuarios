@@ -9,8 +9,14 @@ dotenv.config();
 // Espacio para rutas
 const usuarioRouter = require("./routes/usuarios");
 
+// Variables de entorno
+const { MONGO_KEY, MONGO_KEY_TEST, NODE_ENV } = process.env;
+
+const connectionString =
+  NODE_ENV === "development" ? MONGO_KEY : MONGO_KEY_TEST;
+
 // Conexión Mongo DB
-const connect = mongoose.connect(process.env.MONGO_KEY, {
+const connect = mongoose.connect(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
@@ -19,7 +25,7 @@ const connect = mongoose.connect(process.env.MONGO_KEY, {
 
 // Verificación de conexión
 connect.then(() => {
-  console.log("Conectado correctamente al servidor");
+  console.log(`Conectado correctamente al servidor en el entorno ${NODE_ENV}`);
 }),
   (err) => {
     console.log(err);
@@ -51,8 +57,8 @@ app.use("/usuarios", usuarioRouter);
 // Puertos
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`API corriendo en http://localhost:${PORT}`);
 });
 
-module.exports = app;
+module.exports = { app, server };
