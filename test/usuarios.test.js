@@ -27,7 +27,7 @@ beforeAll((done) => {
 
 describe("Crear usuarios", () => {
   describe("POST /usuarios/signup", () => {
-    //Usuario correcto
+    // Usuario correcto sin permisos de administrador
     const usuario = {
       correo: "celestesukkie@gmail.com",
       nombres: "Maria Celeste",

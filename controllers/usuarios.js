@@ -134,7 +134,7 @@ function eliminarUsuario(req, res, next) {
       .catch((err) => next(err));
   } else {
     res.statusCode = 403;
-    res.end(`You cannot delete this user`);
+    res.end(`No tienes permiso para eliminar este usuario`);
   }
 }
 
