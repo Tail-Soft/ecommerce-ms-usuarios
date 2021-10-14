@@ -1,5 +1,4 @@
 const express = require("express");
-const Usuario = require("../models/usuario");
 const passport = require("passport");
 const autenticacion = require("../services/autenticacion");
 
@@ -11,7 +10,11 @@ const {
   iniciarSesion,
   cerrarSesion,
   obtenerUsuarios,
+  obtenerUsuario,
+  actualizarUsuario,
+  eliminarUsuario,
 } = require("../controllers/usuarios");
+const { authenticate } = require("passport");
 
 // Obtiene todos los usuarios
 usuarioRouter.get(
@@ -48,5 +51,35 @@ usuarioRouter.get(
     cerrarSesion(req, res, next);
   }
 );
+
+// Rutas con id de usuario como parámetro
+usuarioRouter
+  .route("/:idUsuario")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  // Ruta para obtener un usuario específico
+  .get(autenticacion.verifyUser, (req, res, next) => {
+    obtenerUsuario(req, res, next);
+  })
+  // Esta operación no está permitida para esta ruta.
+  .post(
+    autenticacion.verifyUser,
+    autenticacion.verifyAdmin,
+    (req, res, next) => {
+      res.statusCode = 403;
+      res.end(
+        `La operación POST no es soportada en la ruta /usuarios/${req.params.idUsuario}`
+      );
+    }
+  )
+  // Ruta para actualizar los datos de un usuario
+  .put(autenticacion.verifyUser, (req, res, next) => {
+    actualizarUsuario(req, res, next);
+  })
+  // Ruta para eliminar un usuario específico
+  .delete(autenticacion.verifyUser, (req, res, next) => {
+    eliminarUsuario(req, res, next);
+  });
 
 module.exports = usuarioRouter;

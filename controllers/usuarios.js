@@ -69,9 +69,81 @@ function cerrarSesion(req, res, next) {
   }
 }
 
+function obtenerUsuario(req, res, next) {
+  /* Solo el usuario al cual pertenece la cuenta o un
+   * administrador puede consutal su información.
+   */
+  if (req.user._id.equals(req.params.userId) || req.user.admin) {
+    Usuario.findById(req.params.idUsuario)
+      .then(
+        (usuario) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json(usuario);
+        },
+        (err) => next(err)
+      )
+      .catch((err) => next(err));
+  } else {
+    res.statusCode = 403;
+    res.end(`No puedes consultar la información de este usuario`);
+  }
+}
+
+function actualizarUsuario(req, res, next) {
+  /* Solo el usuario al cual pertenece la información o un
+   * administrador puede actualizarla.
+   */
+  if (req.user._id.equals(req.params.idUsuario) || req.user.admin) {
+    // Evita que el usuario actualice su rol
+    delete req.body.admin;
+    Usuario.findByIdAndUpdate(
+      req.params.idUsuario,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    ).then(
+      (usuario) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(usuario);
+      },
+      (err) => next(err)
+    );
+  } else {
+    res.statusCode = 403;
+    res.end(`No puedes actualizar la información de este usuario`);
+  }
+}
+
+function eliminarUsuario(req, res, next) {
+  /* Solo el usuario al cual pertenece la cuenta o un
+   * administrador puede eliminarla.
+   */
+  if (req.user._id.equals(req.params.idUsuario) || req.user.admin) {
+    Usuario.findByIdAndRemove(req.params.idUsuario)
+      .then(
+        (response) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json(response);
+        },
+        (err) => next(err)
+      )
+      .catch((err) => next(err));
+  } else {
+    res.statusCode = 403;
+    res.end(`You cannot delete this user`);
+  }
+}
+
 module.exports = {
   crearUsuario,
   iniciarSesion,
   cerrarSesion,
   obtenerUsuarios,
+  obtenerUsuario,
+  actualizarUsuario,
+  eliminarUsuario,
 };
