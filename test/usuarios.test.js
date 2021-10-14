@@ -4,6 +4,7 @@ const { server } = require("../app");
 const { api } = require("./helpers");
 
 let token = "";
+let idUsuario = "";
 
 /**
  * Obtiene el token de administrador antes de ejecutar las pruebas
@@ -110,12 +111,31 @@ describe("Obtener usuarios", () => {
         .set("Authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
-
+      // Asigna el ID del último usuario para realizar las pruebas posteriores
+      idUsuario = res.body[res.body.length - 1]._id;
       expect(Array.isArray(res.body)).toBeTruthy();
     });
 
     it("Incorrectamente (no autorizado)", async () => {
       const res = await api.get("/usuarios").expect(401);
+
+      expect(res.text).toEqual("Unauthorized");
+    });
+  });
+});
+
+describe("Eliminar usuario", () => {
+  describe("DELETE /usuario/:idUsuario", () => {
+    it("Satisfactoriamente", async () => {
+      const res = await api
+        .delete(`/usuarios/${idUsuario}`)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+    });
+
+    it("Incorrectamente (no autorizado)", async () => {
+      const res = await api.delete(`/usuarios/${idUsuario}`).expect(401);
 
       expect(res.text).toEqual("Unauthorized");
     });
