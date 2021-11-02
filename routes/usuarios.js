@@ -1,6 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 const autenticacion = require("../services/autenticacion");
+const Usuario = require("../models/usuario");
 
 const cors = require("../services/cors");
 const usuarioRouter = express.Router();
@@ -80,6 +81,67 @@ usuarioRouter
   // Ruta para eliminar un usuario específico
   .delete(autenticacion.verifyUser, (req, res, next) => {
     eliminarUsuario(req, res, next);
+  });
+
+// Ruta para direcciones de usuario
+usuarioRouter
+  .route("/direcciones/:idUsuario")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  // Obtiene el array de direcciones de envio del usuario
+  .get(cors.cors, autenticacion.verifyUser, (req, res, next) => {
+    Usuario.findById(req.params.idUsuario)
+      .then(
+        (usuario) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json(usuario.direccion_envio);
+        },
+        (err) => next(err)
+      )
+      .catch((err) => next(err));
+  })
+  // Operación no permitida para esta ruta
+  .post(
+    autenticacion.verifyUser,
+    autenticacion.verifyAdmin,
+    (req, res, next) => {
+      res.statusCode = 403;
+      res.end(
+        `La operación POST no es soportada en la ruta /direcciones/${req.params.idUsuario}`
+      );
+    }
+  )
+  //Añade y actualiza el array de direcciones
+  .put(
+    autenticacion.verifyUser,
+    autenticacion.verifyAdmin,
+    (req, res, next) => {
+      Usuario.findByIdAndUpdate(
+        req.params.idUsuario,
+        {
+          $push: { direccion_envio: req.body },
+        },
+        { new: true }
+      )
+        .then(
+          (direcciones) => {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json(direcciones);
+          },
+          (err) => next(err)
+        )
+        .catch((err) => next(err));
+    }
+  )
+  // Elimina todas las direcciones del usuario (No permitida)
+  .delete(autenticacion.verifyUser, (req, res, next) => {
+    res.statusCode = 403;
+    res.end(
+      `La operación POST no es soportada en la ruta /direcciones/${req.params.idUsuario}`
+    );
   });
 
 module.exports = usuarioRouter;
