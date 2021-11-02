@@ -112,8 +112,10 @@ describe("Obtener usuarios", () => {
         .set("Authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
-      // Asigna el ID del último usuario para realizar las pruebas posteriores
+
+      // Asigna el ID del primer usuario
       idUsuario = res.body[0]._id;
+      // Asigna el ID del último usuario para realizar delete
       idUsuario2 = res.body[res.body.length - 1]._id;
       expect(Array.isArray(res.body)).toBeTruthy();
     });
