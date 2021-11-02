@@ -5,6 +5,7 @@ const { api } = require("./helpers");
 
 let token = "";
 let idUsuario = "";
+let idUsuario2 = "";
 
 /**
  * Obtiene el token de administrador antes de ejecutar las pruebas
@@ -112,7 +113,8 @@ describe("Obtener usuarios", () => {
         .expect(200)
         .expect("Content-Type", /application\/json/);
       // Asigna el ID del último usuario para realizar las pruebas posteriores
-      idUsuario = res.body[res.body.length - 1]._id;
+      idUsuario = res.body[0]._id;
+      idUsuario2 = res.body[res.body.length - 1]._id;
       expect(Array.isArray(res.body)).toBeTruthy();
     });
 
@@ -125,17 +127,19 @@ describe("Obtener usuarios", () => {
 });
 
 describe("Dirección de envio de usuario", () => {
-  describe("GET /envios/:idUsuario", () => {
+  describe("GET /usuarios/envios/:idUsuario", () => {
     it("Obtiene el array de direcciones de envio del usuario", async () => {
-      const res = await api
-        .delete(`/envios/${idUsuario}`)
+      await api
+        .get(`/usuarios/direcciones/${idUsuario}`)
         .set("Authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
     });
 
     it("Incorrectamente (no autorizado)", async () => {
-      const res = await api.delete(`/usuarios/${idUsuario}`).expect(401);
+      const res = await api
+        .get(`/usuarios/direcciones/${idUsuario}`)
+        .expect(401);
 
       expect(res.text).toEqual("Unauthorized");
     });
@@ -146,14 +150,14 @@ describe("Eliminar usuario", () => {
   describe("DELETE /usuario/:idUsuario", () => {
     it("Satisfactoriamente", async () => {
       const res = await api
-        .delete(`/usuarios/${idUsuario}`)
+        .delete(`/usuarios/${idUsuario2}`)
         .set("Authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
     });
 
     it("Incorrectamente (no autorizado)", async () => {
-      const res = await api.delete(`/usuarios/${idUsuario}`).expect(401);
+      const res = await api.delete(`/usuarios/${idUsuario2}`).expect(401);
 
       expect(res.text).toEqual("Unauthorized");
     });
