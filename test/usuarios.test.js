@@ -124,6 +124,24 @@ describe("Obtener usuarios", () => {
   });
 });
 
+describe("Dirección de envio de usuario", () => {
+  describe("GET /envios/:idUsuario", () => {
+    it("Obtiene el array de direcciones de envio del usuario", async () => {
+      const res = await api
+        .delete(`/envios/${idUsuario}`)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+    });
+
+    it("Incorrectamente (no autorizado)", async () => {
+      const res = await api.delete(`/usuarios/${idUsuario}`).expect(401);
+
+      expect(res.text).toEqual("Unauthorized");
+    });
+  });
+});
+
 describe("Eliminar usuario", () => {
   describe("DELETE /usuario/:idUsuario", () => {
     it("Satisfactoriamente", async () => {
