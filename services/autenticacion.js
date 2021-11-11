@@ -1,7 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const Usuario = require("../models/usuario");
-const JwtStrategy = require("passport-jwt").Strategy;
+const JwtStrategy = require("passport-jwt");
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 
@@ -44,7 +44,7 @@ opts.secretOrKey = process.env.SECRET_KEY;
 
 //Método para obtener el usuario usando la estrategia JWT
 exports.jwtPassport = passport.use(
-  new JwtStrategy(opts, (jwt_payload, done) => {
+  new JwtStrategy.Strategy(opts, (jwt_payload, done) => {
     Usuario.findOne({ _id: jwt_payload._id }, (err, usuario) => {
       if (err) {
         return done(err, false);
