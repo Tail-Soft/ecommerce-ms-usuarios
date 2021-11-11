@@ -29,6 +29,6 @@ jobs:
         SECRET_KEY: ${{ secrets.SECRET_KEY }} 
         MONGO_KEY: ${{secrets.MONGO_KEY}}
         MONGO_KEY_TEST: ${{secrets.MONGO_KEY_TEST}}
-    - run: npm ci
+    - run: npm install
     - run: npm run build --if-present
     - run: npm test
