@@ -53,6 +53,22 @@ usuarioRouter.get(
   }
 );
 
+usuarioRouter
+  .route("/verificar/:idUsuario")
+  .get(cors.corsWithOptions, (req, res, next) => {
+    Usuario.findById(req.params.idUsuario).then((usuario) => {
+      if (usuario) {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(usuario);
+      } else {
+        err = new Error("Usuario no encontrado");
+        err.status = 404;
+        return next(err);
+      }
+    });
+  });
+
 // Rutas con id de usuario como parámetro
 usuarioRouter
   .route("/:idUsuario")

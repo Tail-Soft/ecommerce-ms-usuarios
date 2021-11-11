@@ -27,9 +27,14 @@ passport.serializeUser(Usuario.serializeUser());
 // Obtiene el usuario de la sesión
 passport.deserializeUser(Usuario.deserializeUser());
 
-// Función para obtener el token de usuario usando JWT y una Secret key
+// Función para obtener el token de usuario usando JWT y una Secret key (1 dia)
 exports.getToken = function (usuario) {
-  return jwt.sign(usuario, process.env.SECRET_KEY, { expiresIn: 3600 });
+  return jwt.sign(usuario, process.env.SECRET_KEY, { expiresIn: 86400 });
+};
+
+// Función para obtener el Refresh token de usuario usando JWT y una Secret key (30 dias)
+exports.getRefreshToken = function (usuario) {
+  return jwt.sign(usuario, process.env.SECRET_KEY, { expiresIn: 2592000 });
 };
 
 // Opciones para la estrategia de JWT
