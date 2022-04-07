@@ -6,16 +6,16 @@ const passport = require("passport");
 const session = require("express-session");
 const dotenv = require("dotenv");
 require("http");
-const Airbrake = require("@airbrake/node");
-
-dotenv.config();
+const airbreak = require("@airbrake/node");
 
 // airbrake
-new Airbrake.Notifier({
+new airbreak.Notifier({
   projectId: 409701,
   projectKey: "cd6ca1aa7afa25280cbdd6ca7dde329c",
   environment: "production",
 });
+
+dotenv.config();
 
 // Espacio para rutas
 const usuarioRouter = require("./routes/usuarios");
