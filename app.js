@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
 const dotenv = require("dotenv");
-require("raygun-apm/http");
 
 dotenv.config();
 
