@@ -14,7 +14,7 @@ function obtenerUsuarios(req, res, next) {
   });
 }
 
-function crearUsuario(req, res, next) {
+function crearUsuario(req, res) {
   Usuario.register(
     // Parámetros requeridos deben ir dentro del nuevo usuario
     new Usuario({ correo: req.body.correo, nombres: req.body.nombres }),
@@ -28,7 +28,7 @@ function crearUsuario(req, res, next) {
       } else {
         // Parámetros opcionales se asignan si existen.
         if (req.body.apellidos) usuario.apellidos = req.body.apellidos;
-        usuario.save((err, usuario) => {
+        usuario.save((err) => {
           if (err) {
             res.statusCode = 500;
             res.setHeader("Content-Type", "application/json");
@@ -86,7 +86,7 @@ function obtenerUsuario(req, res, next) {
       .catch((err) => next(err));
   } else {
     res.statusCode = 403;
-    res.end(`No puedes consultar la información de este usuario`);
+    res.end("No puedes consultar la información de este usuario");
   }
 }
 
@@ -113,7 +113,7 @@ function actualizarUsuario(req, res, next) {
     );
   } else {
     res.statusCode = 403;
-    res.end(`No puedes actualizar la información de este usuario`);
+    res.end("No puedes actualizar la información de este usuario");
   }
 }
 
@@ -134,7 +134,7 @@ function eliminarUsuario(req, res, next) {
       .catch((err) => next(err));
   } else {
     res.statusCode = 403;
-    res.end(`No tienes permiso para eliminar este usuario`);
+    res.end("No tienes permiso para eliminar este usuario");
   }
 }
 

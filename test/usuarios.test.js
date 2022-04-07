@@ -151,7 +151,7 @@ describe("Dirección de envio de usuario", () => {
 describe("Eliminar usuario", () => {
   describe("DELETE /usuario/:idUsuario", () => {
     it("Satisfactoriamente", async () => {
-      const res = await api
+      await api
         .delete(`/usuarios/${idUsuario2}`)
         .set("Authorization", `Bearer ${token}`)
         .expect(200)
