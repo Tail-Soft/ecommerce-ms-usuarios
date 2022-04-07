@@ -9,6 +9,7 @@ const dotenv = require("dotenv");
 require("http");
 const airbreak = require("@airbrake/node");
 
+// airbrake
 process.env.NODE_ENV === "production" &&
   new airbreak.Notifier({
     projectId: 409701,
