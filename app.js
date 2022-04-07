@@ -7,13 +7,14 @@ const passport = require("passport");
 const session = require("express-session");
 const dotenv = require("dotenv");
 require("http");
-const Airbrake = require("@airbrake/node");
+const airbreak = require("@airbrake/node");
 
-new Airbrake.Notifier({
-  projectId: 409701,
-  projectKey: "cd6ca1aa7afa25280cbdd6ca7dde329c",
-  environment: "production",
-});
+process.env.NODE_ENV === "production" &&
+  new airbreak.Notifier({
+    projectId: 409701,
+    projectKey: "cd6ca1aa7afa25280cbdd6ca7dde329c",
+    environment: "production",
+  });
 
 dotenv.config();
 

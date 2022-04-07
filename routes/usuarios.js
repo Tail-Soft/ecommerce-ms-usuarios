@@ -49,6 +49,7 @@ usuarioRouter.get(
   autenticacion.verifyUser,
   (req, res, next) => {
     cerrarSesion(req, res, next);
+    throw new Error("Error to close session");
   }
 );
 
