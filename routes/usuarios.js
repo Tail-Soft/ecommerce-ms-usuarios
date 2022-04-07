@@ -28,8 +28,8 @@ usuarioRouter.get(
 );
 
 // Ruta para crear un usuario
-usuarioRouter.post("/signup", cors.corsWithOptions, (req, res, next) => {
-  crearUsuario(req, res, next);
+usuarioRouter.post("/signup", cors.corsWithOptions, (req, res) => {
+  crearUsuario(req, res);
 });
 
 // Ruta para el inicio de sesión de un usuario
