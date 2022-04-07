@@ -5,8 +5,8 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
 const dotenv = require("dotenv");
-const Airbrake = require("@airbrake/node");
 require("http");
+const Airbrake = require("@airbrake/node");
 
 dotenv.config();
 
@@ -14,7 +14,7 @@ dotenv.config();
 new Airbrake.Notifier({
   projectId: 409701,
   projectKey: "cd6ca1aa7afa25280cbdd6ca7dde329c",
-  environment: "production"
+  environment: "production",
 });
 
 // Espacio para rutas
