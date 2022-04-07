@@ -9,11 +9,12 @@ require("http");
 const airbreak = require("@airbrake/node");
 
 // airbrake
-new airbreak.Notifier({
-  projectId: 409701,
-  projectKey: "cd6ca1aa7afa25280cbdd6ca7dde329c",
-  environment: "production",
-});
+process.env.NODE_ENV === "production" &&
+  new airbreak.Notifier({
+    projectId: 409701,
+    projectKey: "cd6ca1aa7afa25280cbdd6ca7dde329c",
+    environment: "production",
+  });
 
 dotenv.config();
 
@@ -75,4 +76,4 @@ const server = app.listen(PORT, () => {
   console.log(`API corriendo en http://localhost:${PORT}`);
 });
 
-module.exports = { app, server };
+module.exports = { app, server, airbreak };
