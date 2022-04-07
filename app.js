@@ -1,12 +1,29 @@
+require("raygun-apm/http");
+const raygun = require("raygun");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
 const dotenv = require("dotenv");
-require("raygun-apm/http");
+require("http");
+const airbreak = require("@airbrake/node");
+
+// airbrake
+process.env.NODE_ENV === "production" &&
+  new airbreak.Notifier({
+    projectId: 409701,
+    projectKey: "cd6ca1aa7afa25280cbdd6ca7dde329c",
+    environment: "production",
+  });
 
 dotenv.config();
+
+const raygunClient = new raygun.Client().init({
+  apiKey: process.env.RAYGUN_API_KEY,
+  reportUncaughtExceptions: true,
+  batch: true,
+});
 
 // Espacio para rutas
 const usuarioRouter = require("./routes/usuarios");
@@ -33,7 +50,7 @@ connect
     );
   })
   .catch((err) => {
-    console.log(err);
+    raygunClient.send(err);
   });
 
 const app = express();

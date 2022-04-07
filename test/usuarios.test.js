@@ -166,7 +166,7 @@ describe("Eliminar usuario", () => {
   });
 });
 
-afterAll(() => {
+afterAll((done) => {
   mongoose.connection.close();
-  server.close();
+  server.close(done);
 });

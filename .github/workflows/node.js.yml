@@ -32,3 +32,4 @@ jobs:
         SECRET_KEY: ${{ secrets.SECRET_KEY }} 
         MONGO_KEY: ${{secrets.MONGO_KEY}}
         MONGO_KEY_TEST: ${{secrets.MONGO_KEY_TEST}}
+        RAYGUN_API_KEY: ${{secrets.RAYGUN_API_KEY}}
