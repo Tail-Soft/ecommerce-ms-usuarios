@@ -1,4 +1,5 @@
 require("raygun-apm/http");
+const raygun = require("raygun");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -17,6 +18,12 @@ process.env.NODE_ENV === "production" &&
   });
 
 dotenv.config();
+
+const raygunClient = new raygun.Client().init({
+  apiKey: process.env.RAYGUN_API_KEY,
+  reportUncaughtExceptions: true,
+  batch: true,
+});
 
 // Espacio para rutas
 const usuarioRouter = require("./routes/usuarios");
@@ -43,7 +50,7 @@ connect
     );
   })
   .catch((err) => {
-    console.log(err);
+    raygunClient.send(err);
   });
 
 const app = express();
@@ -76,4 +83,4 @@ const server = app.listen(PORT, () => {
   console.log(`API corriendo en http://localhost:${PORT}`);
 });
 
-module.exports = { app, server, airbreak };
+module.exports = { app, server };
