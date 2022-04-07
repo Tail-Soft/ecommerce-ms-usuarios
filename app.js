@@ -1,10 +1,11 @@
+require("raygun-apm/http");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
 const dotenv = require("dotenv");
-require("raygun-apm/http");
+require("http");
 
 dotenv.config();
 
