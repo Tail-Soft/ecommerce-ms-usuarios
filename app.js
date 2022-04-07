@@ -24,12 +24,15 @@ const connect = mongoose.connect(connectionString, {
 });
 
 // Verificación de conexión
-connect.then(() => {
-  console.log(`Conectado correctamente al servidor en el entorno ${NODE_ENV}`);
-}),
-  (err) => {
+connect
+  .then(() => {
+    console.log(
+      `Conectado correctamente al servidor en el entorno ${NODE_ENV}`
+    );
+  })
+  .catch((err) => {
     console.log(err);
-  };
+  });
 
 const app = express();
 

@@ -19,7 +19,7 @@ const Usuario = new Schema({
     unique: true,
     // Expresión regular para validación de correo
     match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
       "Por favor, ingresa un correo valido.",
     ],
     required: true,

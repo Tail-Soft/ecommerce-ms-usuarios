@@ -15,7 +15,6 @@ const {
   actualizarUsuario,
   eliminarUsuario,
 } = require("../controllers/usuarios");
-const { authenticate } = require("passport");
 
 // Obtiene todos los usuarios
 usuarioRouter.get(
@@ -29,8 +28,8 @@ usuarioRouter.get(
 );
 
 // Ruta para crear un usuario
-usuarioRouter.post("/signup", cors.corsWithOptions, (req, res, next) => {
-  crearUsuario(req, res, next);
+usuarioRouter.post("/signup", cors.corsWithOptions, (req, res) => {
+  crearUsuario(req, res);
 });
 
 // Ruta para el inicio de sesión de un usuario
@@ -53,6 +52,22 @@ usuarioRouter.get(
   }
 );
 
+usuarioRouter
+  .route("/verificar/:idUsuario")
+  .get(cors.corsWithOptions, (req, res, next) => {
+    Usuario.findById(req.params.idUsuario).then((usuario) => {
+      if (usuario) {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(usuario);
+      } else {
+        let err = new Error("Usuario no encontrado");
+        err.status = 404;
+        return next(err);
+      }
+    });
+  });
+
 // Rutas con id de usuario como parámetro
 usuarioRouter
   .route("/:idUsuario")
@@ -64,16 +79,12 @@ usuarioRouter
     obtenerUsuario(req, res, next);
   })
   // Esta operación no está permitida para esta ruta.
-  .post(
-    autenticacion.verifyUser,
-    autenticacion.verifyAdmin,
-    (req, res, next) => {
-      res.statusCode = 403;
-      res.end(
-        `La operación POST no es soportada en la ruta /usuarios/${req.params.idUsuario}`
-      );
-    }
-  )
+  .post(autenticacion.verifyUser, autenticacion.verifyAdmin, (req, res) => {
+    res.statusCode = 403;
+    res.end(
+      `La operación POST no es soportada en la ruta /usuarios/${req.params.idUsuario}`
+    );
+  })
   // Ruta para actualizar los datos de un usuario
   .put(autenticacion.verifyUser, (req, res, next) => {
     actualizarUsuario(req, res, next);
@@ -103,16 +114,12 @@ usuarioRouter
       .catch((err) => next(err));
   })
   // Operación no permitida para esta ruta
-  .post(
-    autenticacion.verifyUser,
-    autenticacion.verifyAdmin,
-    (req, res, next) => {
-      res.statusCode = 403;
-      res.end(
-        `La operación POST no es soportada en la ruta /direcciones/${req.params.idUsuario}`
-      );
-    }
-  )
+  .post(autenticacion.verifyUser, autenticacion.verifyAdmin, (req, res) => {
+    res.statusCode = 403;
+    res.end(
+      `La operación POST no es soportada en la ruta /direcciones/${req.params.idUsuario}`
+    );
+  })
   //Añade y actualiza el array de direcciones
   .put(
     autenticacion.verifyUser,
@@ -137,7 +144,7 @@ usuarioRouter
     }
   )
   // Elimina todas las direcciones del usuario (No permitida)
-  .delete(autenticacion.verifyUser, (req, res, next) => {
+  .delete(autenticacion.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end(
       `La operación POST no es soportada en la ruta /direcciones/${req.params.idUsuario}`

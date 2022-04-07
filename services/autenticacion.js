@@ -1,7 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const Usuario = require("../models/usuario");
-const JwtStrategy = require("passport-jwt").Strategy;
+const JwtStrategy = require("passport-jwt");
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 
@@ -27,9 +27,14 @@ passport.serializeUser(Usuario.serializeUser());
 // Obtiene el usuario de la sesión
 passport.deserializeUser(Usuario.deserializeUser());
 
-// Función para obtener el token de usuario usando JWT y una Secret key
+// Función para obtener el token de usuario usando JWT y una Secret key (1 dia)
 exports.getToken = function (usuario) {
-  return jwt.sign(usuario, process.env.SECRET_KEY, { expiresIn: 3600 });
+  return jwt.sign(usuario, process.env.SECRET_KEY, { expiresIn: 86400 });
+};
+
+// Función para obtener el Refresh token de usuario usando JWT y una Secret key (30 dias)
+exports.getRefreshToken = function (usuario) {
+  return jwt.sign(usuario, process.env.SECRET_KEY, { expiresIn: 2592000 });
 };
 
 // Opciones para la estrategia de JWT
@@ -39,7 +44,7 @@ opts.secretOrKey = process.env.SECRET_KEY;
 
 //Método para obtener el usuario usando la estrategia JWT
 exports.jwtPassport = passport.use(
-  new JwtStrategy(opts, (jwt_payload, done) => {
+  new JwtStrategy.Strategy(opts, (jwt_payload, done) => {
     Usuario.findOne({ _id: jwt_payload._id }, (err, usuario) => {
       if (err) {
         return done(err, false);
